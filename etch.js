@@ -6,6 +6,7 @@ const gridContainer = document.querySelector('#grid-container');
 const SQUARE_SIZE = 20;
 
 // Create AxA grid of pink square divs
+// UPDATE: add progressive darkening. Each interaction adds 20% more color, so full color after 5 interactions
 gridSizeButton.addEventListener('click', () => {
 
     // First, clear previous grid created
@@ -36,7 +37,23 @@ gridSizeButton.addEventListener('click', () => {
     squares.forEach((square) => square.style = `width: ${SQUARE_SIZE}px; height: ${SQUARE_SIZE}px; flex: none`);
 
     // Set up hover effect on divs to change color when mouseover, leaving a trail like a pencil would
-    squares.forEach((square) => square.addEventListener('mouseover', (e) => e.target.style.background = 'pink'));
+    // initial color(always white): 255 255 255, my target color 100%: 255 0 43 (or whatever color I want selected from upper area of rgb color selector)
+    // Delta after each darkening factor applied: R(255-255)*factor= 0 G(0-255)*factor = -51 B(43-255)*factor= -42.4
+    
+    // My target color
+    let rgbNum1 = 255;
+    let rgbNum2 = 0;
+    let rgbNum3 = 43;
+    
+    squares.forEach((square) => {
+        let darkFactor = 0.125;
+        square.addEventListener('mouseover', (e) => {
+            e.target.style.background = `rgb(${255 + (rgbNum1 - 255)*darkFactor}, ${255 + (rgbNum2 - 255)*darkFactor}, ${255 + (rgbNum3 - 255)*darkFactor})`;
+            if (darkFactor < 1) {
+                darkFactor += 0.125;
+            } 
+        });
+    });
 });
 
 
